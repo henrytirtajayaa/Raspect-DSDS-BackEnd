@@ -1,0 +1,3 @@
+db:
+  password: DB_PASSWORD
+jwtSecret: JWT_SECRET

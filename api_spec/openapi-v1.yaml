@@ -1,0 +1,1016 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: DSDS Navigate Service API
+  license:
+    name: Proprietary
+servers:
+  - url: /
+paths:
+  /dsds/api/v1/login:
+    post:
+      summary: Login to DSDS System
+      operationId: login
+      tags:
+        - Auth
+      requestBody:
+        description: Login Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        '200':
+          description: Token Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/logout:
+    post:
+      summary: Logout of DSDS System
+      operationId: logout
+      tags:
+        - Auth
+      requestBody:
+        description: Logout Request body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Logout'
+      responses:
+        '200':
+          description: Logout Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutResponse'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/refresh-access-token:
+    post:
+      summary: refresh the access token for every api
+      operationId: refreshAccessToken
+      tags:
+        - Auth
+      requestBody:
+        description: refresh access token body
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshAccess'
+      responses:
+        '200':
+          description: Refresh Access Token Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+  /dsds/api/v1/trips:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Search for the trips within the area and date bound
+      operationId: findTrips
+      tags:
+        - Trip
+      parameters:
+        - in: query
+          name: boundary
+          schema:
+            type: string
+          description: The boundary of the searching area
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Search for trips
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Trip'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      security:
+        - bearerAuth: []
+      summary: Define a new trip
+      operationId: createTrip
+      tags:
+        - Trip
+      requestBody:
+        description: Start a new inspection trip
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Trip'
+      responses:
+        '200':
+          description: Created Trip
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/trips/{tripId}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get a trip info
+      operationId: Get a trip
+      tags:
+        - Trip
+      parameters:
+        - in: path
+          name: tripId
+          schema:
+            type: string
+          required: true
+          description: Trip ID for the update
+      responses:
+        '200':
+          description: Created Trip
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      security:
+        - bearerAuth: []
+      summary: Update the Trip status
+      operationId: updateTripStatus
+      tags:
+        - Trip
+      parameters:
+        - in: path
+          name: tripId
+          schema:
+            type: string
+          required: true
+          description: Trip ID for the update
+      requestBody:
+        description: Update a trip status
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripUpdateRequest'
+      responses:
+        '200':
+          description: Latest trip status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Trip'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/trips/sampleSet:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create an Sample Set
+      operationId: createSampleSet
+      tags:
+        - Performance
+      parameters:
+        - in: query
+          name: tripId
+          schema:
+            type: string
+          required: true
+          description: Trip ID
+        - in: query
+          name: sampleRate
+          schema:
+            type: number
+          required: true
+          description: Sample rate
+      responses:
+        '200':
+          description: Sample Set
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SampleSet'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/trips/evaluations:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get the Evaluation for a Trip
+      operationId: getTripEvaluation
+      tags:
+        - Performance
+      parameters:
+        - in: query
+          name: surveyStartDate
+          schema:
+            type: string
+          required: true
+          description: Survey start date
+        - in: query
+          name: surveyEndDate
+          schema:
+            type: string
+          required: true
+          description: Survey end date
+      responses:
+        '200':
+          description: Evaluation Result
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Evaluation'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create an Evaluation against a set of samples
+      operationId: createTripEvaluation
+      tags:
+        - Performance
+      parameters:
+        - in: query
+          name: sampleSetStartDate
+          schema:
+            type: string
+          required: true
+          description: Sample Set Start Date
+        - in: query
+          name: sampleSetEndDate
+          schema:
+            type: string
+          required: true
+          description: Sample Set End Date
+      responses:
+        '200':
+          description: Created Evaluation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evaluation'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/trips/{tripId}/photos:
+    post:
+      security:
+        - bearerAuth: []
+      summary: Attaching image to the trip
+      operationId: attachPhotos
+      tags:
+        - Photo
+      parameters:
+        - in: path
+          name: tripId
+          schema:
+            type: string
+          required: true
+          description: Trip ID for the update
+      requestBody:
+        description: List of photos
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Image'
+      responses:
+        '200':
+          description: Updated Trip Info
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      security:
+        - bearerAuth: []
+      summary: Search image from the trip
+      operationId: searchPhotos
+      tags:
+        - Photo
+      parameters:
+        - in: path
+          name: tripId
+          schema:
+            type: string
+          required: true
+          description: Trip ID for the update
+        - in: query
+          name: coordinates
+          schema:
+            type: string
+          required: true
+          description: Coordinates along the trip path
+      responses:
+        '200':
+          description: Photo Search Result
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/signboards:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Search for the signboards within the area and date bound
+      operationId: findSignboards
+      tags:
+        - Signboard
+      parameters:
+        - in: query
+          name: boundary
+          schema:
+            type: string
+          description: The boundary of the searching area
+        - in: query
+          name: startDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: endDate
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: keyword
+          schema:
+            type: string
+        - in: query
+          name: status
+          schema:
+            type: string
+        - in: query
+          name: isDefective
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Search for signboards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Signboard'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      security:
+        - bearerAuth: []
+      summary: Define new Signboards
+      operationId: createSignboard
+      tags:
+        - Signboard
+      requestBody:
+        description: Create new Signboards
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Signboard'
+      responses:
+        '200':
+          description: Created new Signboards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Signboard'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/signboards/{signboardId}/images:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Search for signboard images
+      operationId: searchSignbaordImages
+      tags:
+        - Signboard
+      parameters:
+        - in: path
+          name: signboardId
+          schema:
+            type: string
+          required: true
+          description: Signboard ID
+      responses:
+        '200':
+          description: Search for signboard images
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Image'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      security:
+        - bearerAuth: []
+      summary: Assign images to signbaord
+      operationId: assignImageToSignboard
+      tags:
+        - Signboard
+      parameters:
+        - in: path
+          name: signboardId
+          schema:
+            type: string
+          required: true
+          description: Signboard ID for the update
+      requestBody:
+        description: Create a new Signboard
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/ImageAnnotation'
+      responses:
+        '200':
+          description: Updated Signboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signboard'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /dsds/api/v1/signboards/{signboardId}/defect:
+    put:
+      security:
+        - bearerAuth: []
+      summary: Assign defect to signbaord
+      operationId: assignDefectToSignboard
+      tags:
+        - Signboard
+      parameters:
+        - in: path
+          name: signboardId
+          schema:
+            type: string
+          required: true
+          description: Signboard ID for the update
+      requestBody:
+        description: Define defect in signboard
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Defect'
+      responses:
+        '200':
+          description: Updated Signboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Signboard'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    patch:
+      security:
+        - bearerAuth: []
+      summary: Update signbaord defect
+      operationId: updateSignboardDefect
+      tags:
+        - Signboard
+      parameters:
+        - in: path
+          name: signboardId
+          schema:
+            type: string
+          required: true
+          description: Signboard ID for the update
+      requestBody:
+        description: Signboard image
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Image'
+      responses:
+        '200':
+          description: Updated Signboard Image
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Image'
+        '401':
+          description: Unauthorised Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnauthorizedError'
+        '500':
+          description: Business Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+  schemas:
+    Login:
+      type: object
+      description: Login Requeest
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+        rememberMe:
+          type: boolean
+    Logout:
+      type: object
+      description: Logout Request
+      properties:
+        userId:
+          type: string
+        refreshToken:
+          type: string
+    RefreshAccess:
+      type: object
+      description: Refreh Access Token Request
+      properties:
+        userId:
+          type: string
+        refreshToken:
+          type: string
+    Token:
+      type: object
+      description: Generic no return operation result
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    LogoutResponse:
+      type: object
+      description: Generic return if logout is successful
+      properties:
+        refreshTokenRemoved:
+          type: boolean
+    Trip:
+      type: object
+      description: Trip
+      properties:
+        id:
+          type: string
+        refId:
+          type: string
+        startLocation:
+          $ref: '#/components/schemas/Location'
+        endLocation:
+          $ref: '#/components/schemas/Location'
+        tripDuration:
+          type: number
+        lastSequence:
+          type: number
+          description: Waypoint Sequence number for the trip recorded
+        waypointSize:
+          type: number
+          description: Number of waypoints stored
+        waypoints:
+          $ref: '#/components/schemas/LineString'
+        waypointsDistance:
+          type: array
+          items:
+            type: number
+        locationService3DRef:
+          type: string
+        status:
+          type: string
+          enum: ['Recording', 'Uploading', 'Processing', 'Completed']
+        startTime:
+          type: string
+          format: date-time
+        endTime:
+          type: string
+          format: date-time
+    SampleSet:
+      type: object
+      description: Signboard sample set
+      properties:
+        id:
+          type: string
+        tripId:
+          type: string
+        sampleRate:
+          type: number
+        samples:
+          type: array
+          items:
+            type: string
+    Evaluation:
+      type: object
+      description: Signboard sampling Evaluation
+      properties:
+        id:
+          type: string
+        sampleSetIds:
+          type: array
+          items:
+            type: string
+        evaluationDate:
+          type: string
+          format: date-time
+        sampleSetStartTime:
+          type: string
+          format: date-time
+        sampleSetEndTime:
+          type: string
+          format: date-time
+        signboardCount:
+          type: number
+        defectiveSignboardCount:
+          type: number
+        locationAssignedSignboardCount:
+          type: number
+        autoSignboardCount:
+          type: number
+        manualSignboardCount:
+          type: number
+    Image:
+      type: object
+      description: Signboard image
+      properties:
+        id:
+          type: string
+        tripRefId:
+          type: string
+        batchNo:
+          type: number
+        filename:
+          type: string
+        lowResTransformationMatrix:
+          type: array
+          items:
+            type: number
+        mediumResTransformationMatrix:
+          type: array
+          items:
+            type: number
+        highResTransformationMatrix:
+          type: array
+          items:
+            type: number
+        location:
+          $ref: '#/components/schemas/Location'
+        cameraId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+    ImageAnnotation:
+      type: object
+      description: Annotation for the image
+      properties:
+        id:
+          type: string
+        imageId:
+          type: string
+        polygons:
+          type: string
+        attributes:
+          type: object
+    TripUpdateRequest:
+      type: object
+      description: Request for update the trip
+      properties:
+        sequence:
+          type: number
+        waypoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Location'
+        status:
+          type: string
+          enum: [recording, finished]
+    Signboard:
+      type: object
+      description: Signboard Object
+      properties:
+        id:
+          type: string
+        defectCount:
+          type: number
+        maxDefectSeverity:
+          type: number
+        location:
+          $ref: '#/components/schemas/Location'
+        tripIds:
+          type: array
+          items:
+            type: string
+        address:
+          type: string
+        street:
+          type: string
+        streetNo:
+          type: string
+        building:
+          type: string
+        districtCode:
+          type: string
+        structId:
+          type: string
+        floor:
+          type: string
+        images:
+          type: array
+          items:
+            $ref: '#/components/schemas/Image'
+        headroom:
+          type: number
+        width:
+          type: number
+        height:
+          type: number
+        thick:
+          type: number
+        latestSurveyDate:
+          type: string
+          format: date
+        signboardType:
+          type: string
+        signboardAnnotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageAnnotation'
+        defects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Defect'
+        status:
+          type: string
+          enum: [pending, active, deleted]
+        lastModifiedBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+    Defect:
+      type: object
+      description: Defect Object
+      properties:
+        id:
+          type: string
+        defectClass:
+          type: string
+        defectSeverity:
+          type: number
+        defectConfidence:
+          type: number
+        isManualDefect:
+          type: boolean
+        annotations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ImageAnnotation'
+        lastModifiedBy:
+          type: string
+        lastModifiedDate:
+          type: string
+          format: date-time
+    Location:
+      type: object
+      description: Point GeoJSON
+      properties:
+        type:
+          type: string
+          enum: ['Point']
+        coordinates:
+          type: array
+          items:
+            type: number
+          minItems: 2
+          maxItems: 3
+    LineString:
+      type: object
+      description: LineString GeoJSON
+      properties:
+        type:
+          type: string
+          enum: ['LineString']
+        coordinates:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+            minItems: 2
+            maxItems: 3
+    Error:
+      type: object
+      description: Error Object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+    UnauthorizedError:
+      description: Access token is missing or invalid

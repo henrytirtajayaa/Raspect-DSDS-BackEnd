@@ -1,0 +1,69 @@
+server:
+  host: "0.0.0.0"
+  port: 3002
+  proxyHost:
+  proxyPort:
+logging:
+  # Comment the elk line to print the log in stdout
+  elk: 'http://localhost:9200'
+  # Use below when run inside docker
+  #elk: 'http://elk:9200'
+  serializers:
+    request_body: 'flatten'
+    response_body: 'flatten'
+    request_header: 'flatten'
+    response_header: 'flatten'
+    config: 'flatten'
+  redact:
+    - secret
+    - config.db.password
+    - userId
+    - auth.jwtSecret
+    - password
+    - logging.elasticCloudApiKey
+auth:
+  jwtSecret:
+    - ABCDEFG
+    - HIJKLMN
+  jwtIssuer: ACE
+  rememberMeMaxAge: 7776000
+  accessTokenLifetime: 900
+  apiAccessTokenLifetime: 3600
+  refreshTokenLifetime: 7776000
+  refreshTokenLifetimeShort: 900
+db:
+  uri: 'mongodb://localhost:27017/test'
+  user: ''
+  password: ''
+  poolSize: 5
+  ssl: true
+  replicaSet: null
+  authSource: 'admin'
+s3:
+  imageBucket:
+    name: 'dsds-images'
+    accessKeyId: 'AKIAU4MS4UJF4V4R55SL'
+    secretAccessKey: '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'
+    accessExpiry: 3600
+ses:
+  accessKeyId: 'AKIAU4MS4UJF2X6SE4UB'
+  secretAccessKey: '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'
+resize:
+  - width: 1920
+    suffix: 'h'
+    scalePropertyName: 'highResMatrix'
+    filePropertyName: 'highResPath'
+  - width: 1280
+    suffix: 'm'
+    scalePropertyName: 'mediumResMatrix'
+    filePropertyName: 'mediumResPath'
+  - width: 320
+    suffix: 'l'
+    scalePropertyName: 'lowResMatrix'
+    filePropertyName: 'lowResPath'
+crop:
+  ratio:
+    width: 16
+    height: 9
+web:
+  baseUrl: "http://dsds.local:81/"

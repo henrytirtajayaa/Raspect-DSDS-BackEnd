@@ -1,0 +1,18 @@
+db:
+    uri: 'mongodb+srv://dsds-dev.iqbzk.mongodb.net/dsds?retryWrites=true&w=majority'
+    user: 'dsds'
+    password: 'wu8lo4uGvGuRxs9b'
+    ssl: true
+logging:
+    elasticCloudId: 'app-monitoring:YXAtZWFzdC0xLmF3cy5lbGFzdGljLWNsb3VkLmNvbSRmNjEzNjQyZGQ2NmY0ZGRhYjVhOThmNWM5YTkzZDhjNCRkMGM4ZGRiNjYyNjY0YjU3ODBkOGIyOWM1NmQ0OTdhMQ=='
+    elasticCloudUsername: 'elastic'
+    elasticCloudPassword: 'N34wkWs4Jbuzj0nKA4Qs6QL9'
+    elasticCloudEndpoint: 'https://app-monitoring.es.ap-east-1.aws.elastic-cloud.com:9243'
+workflow:
+    endpoint: "https://api.prefect.io/"
+    prefectToken: "FhgfnuchtUtp40BYFjxScg"
+web:
+    baseUrl: "https://dsds-staging.raspect.ai/"
+    supportEmail: "bdp201903.dev@raspect.ai"
+locationService:
+    endpoint: 'dsds-location-service:50060'

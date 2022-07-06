@@ -1,0 +1,3 @@
+db:
+  uri: 'inmemory'
+  ssl: false

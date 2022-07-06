@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+service AddressService {
+    rpc FindAddressByPoint (FindAddressByPointRequest) returns (FindAddressByPointResponse);
+    rpc FindAddressByWgs84Point (FindAddressByWgs84PointRequest) returns (FindAddressByPointResponse);
+    rpc FindBdBuildingByPoint (FindBdBuildingByPointRequest) returns (FindBdBuildingByPointResponse);
+    rpc FindBdBuildingByWgs84Point (FindBdBuildingByWgs84PointRequest) returns (FindBdBuildingByPointResponse);
+}
+
+message FindAddressByPointRequest {
+    double x = 1;
+    double y = 2;
+    float search_dist_m = 3;
+    int64 out_srid = 4;
+}
+
+message FindAddressByWgs84PointRequest {
+    double lon = 1;
+    double lat = 2;
+    float search_dist_m = 3;
+    int64 out_srid = 4;
+}
+
+message FindAddressByPointResponse {
+
+    message Address {
+        int64 object_id = 1;
+        int64 s_id = 2;
+        string source_layer = 3;
+        string english_name = 4;
+        string chinese_name = 5;
+        string english_address = 6;
+        string chinese_address = 7;
+        float distance = 8;
+        float x = 9;
+        float y =10;
+    }
+
+    repeated Address addresses = 1;
+}
+
+message FindBdBuildingByPointRequest {
+    double x = 1;
+    double y = 2;
+    float search_dist_m = 3;
+    optional int64 out_srid = 4;
+}
+
+message FindBdBuildingByWgs84PointRequest {
+    double lon = 1;
+    double lat = 2;
+    float search_dist_m = 3;
+    optional int64 out_srid = 4;
+}
+
+message FindBdBuildingByPointResponse {
+
+    message BdBuilding {
+        int64 struct_id = 1;
+        string file_ref = 2;
+        string english_address = 3;
+        string english_street_name = 4;
+        string chinese_address = 5;
+        string chinese_street_name = 6;
+        string area_code = 7;
+        float distance = 8;
+        float x = 9;
+        float y = 10;
+    }
+
+    repeated BdBuilding bdBuilding = 1;
+}
